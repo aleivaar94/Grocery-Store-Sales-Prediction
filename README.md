@@ -1,57 +1,56 @@
 
-# Credit Card Offer Analysis
+# Predicting Grocery Store Sales - XGBoost
 
-Inflation, Inflation, Inflation… Despite the grim economic outlook, people still need to buy, and companies still need to sell. Or at least try to get you to spend more. Among those strategies by companies to get you to buy more are credit cards.
+In this project I build a prediction model using gradient boosted trees algorithm (XGBoost Library) to predict sales.
 
-Credit card offers can be attractive, but depending on the credit card and how you use, it can either bring in some cash or worsen your credit score. The question is, how can you be smart about with your money?
+# Results
+Features more important to predicting sales are List Price (`Item_MRP`) and how much an item is visible to the consumer in the grocery store (`Item_Visibility`). 
 
-In this project I analyse my credit card expenses and purchasing habits to determine if a credit offer I got is worth accepting.
+![image](https://github.com/aleivaar94/Grocery-Store-Sales-Prediction/blob/master/images/feature-importance.png)
 
-![image](https://github.com/aleivaar94/BMO-Airmiles-Analysis/blob/master/images/credit-card-cbc-news.png)
+## Predicting Sales from List Price
 
+![image](https://github.com/aleivaar94/Grocery-Store-Sales-Prediction/blob/master/images/list-price-vs-sales.png)
+
+
+## Predicting Sales from Item Visibility
+
+![image](https://github.com/aleivaar94/Grocery-Store-Sales-Prediction/blob/master/images/visibility-vs-sales.png)
+
+
+Train data
+𝑅^2 = 0.86
+MSE = 390007.2
+
+Test data
+𝑅^2 = 0.52
+MSE = 1471566.31
 
 # Methodology
 
-Air Miles are awarded depending on the amount spent. The normal rate is 1 mile for every $20.0 dollars. However, if you use a credit card from a bank affiliated with Air Miles you can earn more Air Miles with less money spent. Certain stores give more miles than the standard rate. For example, Safeway gives 3x more miles.
-
-- Standard Air Miles: 1 miles for every $20.0 spent.
-- BMO *Air Miles* Mastercard: 3 miles for every $25.0 spent.
-- BMO *Air Miles World Elite* Mastercard: 3 miles for every $12.0 spent.
-
-Conversion of miles to cash:
-
-95 miles = $10.0 or,
-
-9.5 miles = $1.0
-
-![image](https://github.com/aleivaar94/BMO-Airmiles-Analysis/blob/master/images/bmo-airmiles-offer.png)
-
 ## Data Collection
 
-I track my expenses and keep them in an Excel spreadsheet. Each expenses includes information such as data, amount, category, store, etc. 
-
-![image](https://github.com/aleivaar94/BMO-Airmiles-Analysis/blob/master/images/df-expenses.png)
+The data was obtained from [Kaggle](https://www.kaggle.com/datasets/brijbhushannanda1979/bigmart-sales-data). The data comes from a grocery store and contains sales data form 2013 for 1559 products across 10 stores in different cities.
 
 
-## Data Analysis
+## Data Cleaning & Analysis
 
-1. Air Miles are then calculated from credit card purchases, excluding purchases made with debit or any other form of payment that would not give air miles in return. Affiliated stores that give more air miles than the standard rate are taking into account.
-2. The amount of each expense is divided by a floor division so that every $20.0 dollars gives 1 mile, $40.0 dollars 2 miles and so on.
-3. Extra miles are calculated for affiliated stores that give more miles than the standard rate of 1 mile = $20.0 dollars.
-4. Miles are summed per year and the total cashback is calculated by subtracting the annual fee of each credit card.
+Two features had more than 15% of missing data. Dropping null values would cause the model to underfit. Instead, missing values are replace with the mean 
 
+`Item_Weight` and `Outlet_Size` have 17% and 28% missing values respectively. By dropping the null values we are loosing an important chunk of data, instead, missing values of `Item_Weight` are replaced with the mean.
 
-# Results
+`Outlet_Size`, being a categorical variable, is replaced with the mode. After concluding that there is no correlation between among the different `Outlet_Size` options (i.e. High, Medium, Small) and `Outlet_Type`. 
 
-![image](https://github.com/aleivaar94/BMO-Airmiles-Analysis/blob/master/images/df-benefits-cards.png)
-
-In 2021, with the BMO Elite card I could have earned almost $300.0 dollars worth for miles or $111.0 dollars more than my current Scotiabank cash back card.
-
-In 2022 the BMO Elite card still doesn't bring me benefit. In fact, I would have earned $167 instead of $181 dollars currently earned with my Scotia card. However, the year is not over, and I will accumulate more purchases which will make the BMO Elite card bring me more cash back by the end of the year.
+In order to build the prediction model, all features need to have a numerical data type. Therefore, categorical features were encoded into numerical features using LabelEncoder from the sklearn library..
 
 # Conclusion
 
-The BMO Air Miles World Elite credit card is a good option offered and I should consider switching to it, because it is better than the Scotiabank cash back credit card I currently have. 
+The model does not predict sales well. A couple of strategies to improve the model are:
+
+- Remove outliers.
+- Change the train-test split size.
+- Optimize hyperparameters of the gradient boosted trees algorithm.
+- Run cross validation
 
 
 ## 🔗 Links
